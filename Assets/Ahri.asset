@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f9da2bd5a6ab53498f8bace6bc5adfc, type: 3}
+  m_Name: Ahri
+  m_EditorClassIdentifier: 
+  cost: 4
+  name: Ahri
+  ozellik1Name: "Sihir \xDCstad\u0131"
+  ozellik2Name: Kartel
+  ozellik3Name: 
+  sprite: {fileID: 21300000, guid: 4a661da19aa0e2148a191d24ae0fba33, type: 3}
+  speed: 0
+  damage: 0
+  range: 0
+  ozellik1: 7
+  ozellik2: 0
+  ozellik3: 8
