@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+ // 2-6-10-20-36-56-80-max
 public class HeroPanel : Singleton<HeroPanel>
 {
+    public Button levelButton;
+    public int toplamExp;
+    int [] sliderMaxValues = new int[] {0,2,6,8,18,36,56,80,0};
+    public int levelButtonCount = 4;
     public Button lockBtn;
     public Sprite lockClose;
     public Sprite lockOpen;
     public bool isLocked;
+    public Slider expSlider;
     public Text goldText;
     public Text expText;
     public Text levelText;
@@ -19,14 +26,47 @@ public class HeroPanel : Singleton<HeroPanel>
         goldText.text = _gold.ToString();
     }
     }
-    public int exp;
-    public int level;
+    private int _exp;
+    public int exp{ get => _exp;
+    set{
+        _exp = value;
+        if(exp >= expSlider.maxValue)
+        {
+            int artanExp  = _exp -(int)expSlider.maxValue;
+            level ++;
+            expSlider.maxValue = sliderMaxValues[level];
+            _exp = artanExp;
+        }
+        if(level >= 8)
+        {
+            expText.text = ("Max").ToString();
+            levelButton.interactable = false;
+        }
+        else
+        {
+            expText.text = (_exp + "/" + (int)expSlider.maxValue).ToString();
+        }
+        expSlider.value = _exp;
+    }
+    }
+    private int _level;
+    public int level{
+        get => _level;
+        set {
+            _level = value;
+            levelText.text = _level.ToString();
+            SelectManeger.Instance.sahadakiOyuncuSayisiText.text =SelectManeger.Instance.GetSahaIciOyuncuSayisi().ToString()+ "/" + _level;
+        }
+    }
     public static event System.Action BuyHeroClick; 
     public List<GridController> yedekKlubesi;
     public GridController musaitGrid;
 
     void Start()
     {
+        exp = 0;
+        expSlider.maxValue = 2;
+        level = 1;
         BuyHeroClick += BuyHero;
     }
     public GridController MusaitGridBul(Hero hero)
@@ -35,11 +75,9 @@ public class HeroPanel : Singleton<HeroPanel>
         {
             if(yedekKlubesi[i].uzerindekiChar == null)
             {
-                Debug.Log("yerlestirildi");
                 yedekKlubesi[i].uzerindekiChar = hero.gameObject;
                 hero.transform.parent.position = yedekKlubesi[i].transform.position;
                 hero.GetComponent<KarakterYerlestirme>().hangiZemin = yedekKlubesi[i].gameObject;
-                Debug.Log(yedekKlubesi[i]);
                 return yedekKlubesi[i];
             }
         }
@@ -61,5 +99,11 @@ public class HeroPanel : Singleton<HeroPanel>
         {
             lockBtn.image.sprite = lockOpen;
         }
+    }
+    public void GetLevel()
+    {
+        exp += levelButtonCount;
+        toplamExp += levelButtonCount;
+        gold -= levelButtonCount;
     }
 }

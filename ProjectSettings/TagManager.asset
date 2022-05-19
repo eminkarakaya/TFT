@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Char
   - Ground
+  - Oyunda
+  - Minyon
   layers:
   - Default
   - TransparentFX

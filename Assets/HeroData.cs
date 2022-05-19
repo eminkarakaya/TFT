@@ -13,6 +13,7 @@ public class HeroData : ScriptableObject
     public Sprite sprite;
     public float speed;
     public float damage;
+    public float attackRate;
     public float range;
     public Ozellik ozellik1;
     public Ozellik ozellik2;

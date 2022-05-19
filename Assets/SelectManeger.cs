@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class SelectManeger : MonoBehaviour
+public class SelectManeger : Singleton<SelectManeger>
 {
+    public List<Unit> sahadakiHerolar;
+    public TextMesh sahadakiOyuncuSayisiText;
+    public List<GridController> sahaIciGridler;
+    bool sahaFull;
     public  bool satilmaYerindeMi;
     RaycastHit hit;
     RaycastHit charHit;
     // public int playerMaskInt = 7;
     [SerializeField] private GameObject selectedObject;
     bool basildiMi;
-    // public LayerMask mask;
+    public LayerMask mask;
     // int bitmask;
+     
     private void Update()
     {
         if(Input.GetMouseButtonDown(0))
@@ -19,9 +25,10 @@ public class SelectManeger : MonoBehaviour
             basildiMi = true;
             if(selectedObject == null)
             {
-                RaycastHit hit = CastRay();
+                RaycastHit hit = CastRay(mask);
                 if(hit.collider != null)
                 {
+                    
                     if(!hit.collider.CompareTag("Char"))
                     {
                         return;
@@ -35,12 +42,9 @@ public class SelectManeger : MonoBehaviour
             
             hit = CastRayChar();
             KarakterYerlestirme selectedComponent = selectedObject.GetComponent<KarakterYerlestirme>();
-            // bitmask = mask = 1<<6;
             Vector3 position = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.WorldToScreenPoint(selectedObject.transform.position).z);
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position);
             selectedObject.transform.parent.position = new Vector3(worldPosition.x,.25f,worldPosition.z);
-            //hit = CastRay();
-            selectedObject.GetComponent<Collider>().enabled = false;
             
             if(Input.GetMouseButtonUp(0))
             {   
@@ -52,43 +56,70 @@ public class SelectManeger : MonoBehaviour
                 
                 if(!hit.collider.CompareTag("Ground"))
                 {
-                    selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
-                    selectedObject.GetComponent<Collider>().enabled = true;
-                    selectedObject = null;
-                    basildiMi = false;
-                    // bitmask = mask = 1<<7;
-                    return;
+                    HeroKoymaIptali(selectedComponent);
                 }
                 else
                 {
                     GridController hitGridController  = hit.collider.GetComponent<GridController>();
                     GameObject temp = selectedObject.GetComponent<KarakterYerlestirme>().hangiZemin;
+
+                    // uzerınde car olan grıde car koyarken
                     if(hit.collider.GetComponent<GridController>().uzerindekiChar != null)
                     {
-                        selectedComponent.hangiZemin = hit.collider.gameObject;
-                        selectedObject.transform.parent.position = hit.collider.transform.position;
-                        hitGridController.uzerindekiChar.GetComponent<KarakterYerlestirme>().hangiZemin = temp;
-                        hitGridController.uzerindekiChar.transform.parent.position = temp.transform.position;
-                        Debug.Log("yerlestirildi");
-                        hitGridController.uzerindekiChar = selectedObject;
-                        temp = hitGridController.uzerindekiChar;
+                       DoluYereHeroKoy(selectedComponent,hitGridController,temp);
                     }
                     else
                     {
-                        Debug.Log(hit.collider.name);
-                        selectedComponent.hangiZemin.GetComponent<GridController>().uzerindekiChar = null;
-                        selectedObject.transform.parent.position = hit.collider.gameObject.transform.position;
-                        selectedComponent.hangiZemin = hit.collider.gameObject;
-                        Debug.Log("yerlestirildi");
-                        hit.collider.GetComponent<GridController>().uzerindekiChar = selectedObject;
+                        if(GameController.Instance.gameStage == GameStage.inGame)
+                        {
+                            selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+                            selectedObject = null;
+                            basildiMi = false;
+                            return;
+                        }
+                        //sahaya adam koydugumuz yer
+                        SahaIcıBosYereHeroKoy(selectedComponent);
                     }
-                selectedObject.GetComponent<Collider>().enabled = true;
                 selectedObject = null;
                 basildiMi = false;
-                // bitmask = mask = 1<<7;
                 }
             }
         }
+    }
+    public void HeroKoymaIptali(KarakterYerlestirme selectedComponent)
+    {
+        selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+        selectedObject = null;
+        basildiMi = false;
+        return;
+    }
+    public void DoluYereHeroKoy(KarakterYerlestirme selectedComponent , GridController hitGridController, GameObject temp)
+    {
+        selectedComponent.hangiZemin = hit.collider.gameObject;
+        selectedObject.transform.parent.position = hit.collider.transform.position;
+        hitGridController.uzerindekiChar.GetComponent<KarakterYerlestirme>().hangiZemin = temp;
+        hitGridController.uzerindekiChar.transform.parent.position = temp.transform.position;
+        hitGridController.uzerindekiChar = selectedObject;
+        temp = hitGridController.uzerindekiChar;
+        GetSahaIciOyuncuSayisi();
+    }
+    public void SahaIcıBosYereHeroKoy(KarakterYerlestirme selectedComponent)
+    {
+        if(!hit.collider.GetComponent<GridController>().yedekMi)
+        {
+            if(GetSahaIciOyuncuSayisi() == HeroPanel.Instance.level && selectedComponent.hangiZemin.GetComponent<GridController>().yedekMi)
+            {
+                selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+                selectedObject = null;
+                GetSahaIciOyuncuSayisi();
+                return;
+            }
+        }
+        selectedComponent.hangiZemin.GetComponent<GridController>().uzerindekiChar = null;
+        selectedComponent.hangiZemin = hit.collider.gameObject;
+        selectedObject.transform.parent.position = hit.collider.gameObject.transform.position;
+        hit.collider.GetComponent<GridController>().uzerindekiChar = selectedObject;
+        GetSahaIciOyuncuSayisi();
     }
     public void True()
     {
@@ -111,7 +142,26 @@ public class SelectManeger : MonoBehaviour
             selectedObject = null;
         }
     }
-    private RaycastHit CastRay()
+    public int GetSahaIciOyuncuSayisi()
+    {
+        var sahadakiOyuncuSayisi = 0;
+        List<Unit> sahadakiUnits = new List<Unit>();
+        for (int i = 0; i < sahaIciGridler.Count; i++)
+        {
+            if(sahaIciGridler[i].uzerindekiChar != null)
+            {
+                if(!sahadakiHerolar.Contains(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>()))
+                {
+                    sahadakiUnits.Add(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>());
+                }
+                sahadakiOyuncuSayisi++;
+            }
+        }
+        sahadakiHerolar = sahadakiUnits;
+        sahadakiOyuncuSayisiText.text = sahadakiOyuncuSayisi.ToString()+ "/" + HeroPanel.Instance.level;
+        return sahadakiOyuncuSayisi;
+    }
+    private RaycastHit CastRay(LayerMask layerMask)
     {
         Vector3 screenMousePosFar = new Vector3(
             Input.mousePosition.x,
@@ -126,7 +176,7 @@ public class SelectManeger : MonoBehaviour
         Vector3 worldMousePosFar = Camera.main.ScreenToWorldPoint(screenMousePosFar);
         Vector3 worldMousePosNear = Camera.main.ScreenToWorldPoint(screenMousePosNear);
         RaycastHit hit;
-        Physics.Raycast(worldMousePosNear,worldMousePosFar - worldMousePosNear, out hit ,Mathf.Infinity);
+        Physics.Raycast(worldMousePosNear,worldMousePosFar - worldMousePosNear, out hit ,Mathf.Infinity, layerMask);
 
         return hit;
     }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public enum Ozellik
 {
@@ -17,13 +19,40 @@ public enum Ozellik
     cifteAtis,
     bos
 }
-public class Hero : MonoBehaviour
+public enum State
 {
+    walk,
+    attack
+}
+public class Hero : Unit
+{
+    public Attack attack;
+    public Movement movement;
+    public GameObject target;
     public HeroData heroData;
     Ozellik ozellik;
     Ozellik ozellik2;
     Ozellik ozellik3;
-    public float speed;
-    public float damage;
-    public float range;
+    public float movemetSpeed;
+    void Start()
+    {
+        attack = GetComponent<Attack>();
+        movement = GetComponent<Movement>();
+        agent = GetComponent<NavMeshAgent>();
+    }
+    // public void OzellikleriAc()
+    // {
+    //     if(GetComponent<KarakterYerlestirme>().hangiZemin != null)
+    //     {
+    //         if(GetComponent<KarakterYerlestirme>().hangiZemin.GetComponent<GridController>().yedekMi == false) 
+    //         {
+    //             attack.enabled = true;
+    //             movement.enabled = true;
+    //         }
+    //     }
+    // }
+    public void PoolPoint()
+    {
+        transform.position = GameController.Instance.poolPos.position;
+    }
 }

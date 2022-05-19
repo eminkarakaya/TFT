@@ -25,6 +25,7 @@ public class RastgeleHeroPrefab : MonoBehaviour
     {
         hero = GameController.Instance.heroPool[Random.Range(0,GameController.Instance.heroPool.Count-1)];
         GameController.Instance.heroPool.Remove(hero);
+        hero.gameObject.SetActive(true); 
         heroData = hero.heroData;
         nameText.text = heroData.name;
         sprite.sprite = heroData.sprite;
@@ -48,10 +49,6 @@ public class RastgeleHeroPrefab : MonoBehaviour
             HeroPanel.Instance.gold -= heroData.cost;
             this.gameObject.SetActive(false);
         }
-    }
-    public void SellHero()
-    {
-
     }
     public void Reflesh()
     {

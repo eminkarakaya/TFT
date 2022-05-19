@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
-    public GameObject uzerindekiChar;  
+    public bool yedekMi;
+    public GameObject uzerindekiChar;
 }
