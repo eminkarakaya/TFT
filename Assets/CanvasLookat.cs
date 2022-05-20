@@ -7,7 +7,7 @@ public class CanvasLookat : MonoBehaviour
     [SerializeField] Transform target;
     void LateUpdate()
     {
-        transform.LookAt(target);
+        transform.rotation = Quaternion.Euler(-50,0,0);
     }
 }
 

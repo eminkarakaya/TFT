@@ -150,10 +150,10 @@ public class SelectManeger : Singleton<SelectManeger>
         {
             if(sahaIciGridler[i].uzerindekiChar != null)
             {
-                if(!sahadakiHerolar.Contains(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>()))
-                {
+                // if(!sahadakiHerolar.Contains(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>()))
+                // {
                     sahadakiUnits.Add(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>());
-                }
+                // }
                 sahadakiOyuncuSayisi++;
             }
         }

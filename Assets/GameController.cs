@@ -11,8 +11,6 @@ public enum GameStage
 }
 public class GameController : Singleton<GameController>
 {
-    // 1-3 2-7 3-7
-
     public List<Unit> sahadakiMinyonlar;
     public List<Unit> yasayanHeros;
     public Transform poolPos;
