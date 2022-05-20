@@ -5895,7 +5895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa38670cb5f8074a9be44586a4b7495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sahadakiMinyonlar: []
+  minionsOnGround: []
   yasayanHeros: []
   poolPos: {fileID: 2077109314}
   minionWave:
@@ -5914,10 +5914,11 @@ MonoBehaviour:
   - {fileID: 1858805181}
   - {fileID: 1216599358}
   activeImage: {fileID: 0}
-  _turSayisi: 0
+  roundText: {fileID: 1889462878}
+  _roundCount: 0
   gameStage: 1
-  turSuresiSlider: {fileID: 444125528}
-  _turSuresi: 10
+  roundTimeSlider: {fileID: 444125528}
+  _roundTime: 10
   heroPool:
   - {fileID: 4674212249983732304}
   - {fileID: 17068874021361331}
@@ -8854,7 +8855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6035806111268308506, guid: cb8360a25a03f0e4a9450f16a1e9521d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.23
+      value: 9.56
       objectReference: {fileID: 0}
     - target: {fileID: 6035806111268308506, guid: cb8360a25a03f0e4a9450f16a1e9521d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8862,7 +8863,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6035806111268308506, guid: cb8360a25a03f0e4a9450f16a1e9521d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.73
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 6035806111268308506, guid: cb8360a25a03f0e4a9450f16a1e9521d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -13914,7 +13915,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -138, y: 0}
+  m_AnchoredPosition: {x: -137.9, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1889462878

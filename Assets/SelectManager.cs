@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectManeger : Singleton<SelectManeger>
+public class SelectManager : Singleton<SelectManager>
 {
     public List<Unit> sahadakiHerolar;
     public TextMesh sahadakiOyuncuSayisiText;

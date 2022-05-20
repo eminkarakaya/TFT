@@ -55,7 +55,7 @@ public class HeroPanel : Singleton<HeroPanel>
         set {
             _level = value;
             levelText.text = _level.ToString();
-            SelectManeger.Instance.sahadakiOyuncuSayisiText.text =SelectManeger.Instance.GetSahaIciOyuncuSayisi().ToString()+ "/" + _level;
+            SelectManager.Instance.sahadakiOyuncuSayisiText.text =SelectManager.Instance.GetSahaIciOyuncuSayisi().ToString()+ "/" + _level;
         }
     }
     public static event System.Action BuyHeroClick; 

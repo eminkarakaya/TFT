@@ -44,7 +44,7 @@ public class Health : MonoBehaviour
         }
         else if(unit.TryGetComponent(out Minyonlar minyonlar))
         {
-            GameController.Instance.sahadakiMinyonlar.Remove(unit);
+            GameController.Instance.minionsOnGround.Remove(unit);
             isDeath = true;
             this.gameObject.SetActive(false);
         }

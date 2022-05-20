@@ -11,7 +11,7 @@ public enum GameStage
 }
 public class GameController : Singleton<GameController>
 {
-    public List<Unit> sahadakiMinyonlar;
+    public List<Unit> minionsOnGround;
     public List<Unit> yasayanHeros;
     public Transform poolPos;
     public List<GameObject> minionWave;
@@ -20,33 +20,34 @@ public class GameController : Singleton<GameController>
     public List<GameObject> imageList; 
     public Image activeImage;
     //public List<Image> turImages;
-    private int _roundPhaseCount;
-    public int roundPhaseCount{
-        get => _roundPhaseCount;
+    private int _roundStageCount;
+    public int roundStageCount{
+        get => _roundStageCount;
         set{
-            imageList[_roundPhaseCount].SetActive(false);
-            _roundPhaseCount = value;
-            imageList[_roundPhaseCount].SetActive(true);
+            imageList[_roundStageCount].SetActive(false);
+            _roundStageCount = value;
+            imageList[_roundStageCount].SetActive(true);
         }
     }
-    [SerializeField] private int _turSayisi;
-    public int turSayisi{
-        get => _turSayisi;
+    public Text roundText;
+    [SerializeField] private int _roundCount;
+    public int roundCount{
+        get => _roundCount;
         set{
-            _turSayisi = value;
+            _roundCount = value;
         }
     }
     public GameStage gameStage;
-    public Slider turSuresiSlider;
-    [SerializeField] private float _turSuresi;
-    public float turSuresi{
-        get => _turSuresi;
+    public Slider roundTimeSlider;
+    [SerializeField] private float _roundTime;
+    public float roundTime{
+        get => _roundTime;
         set{
-            _turSuresi = value;
-            turSuresiSlider.value = _turSuresi;
+            _roundTime = value;
+            roundTimeSlider.value = _roundTime;
         }
     }
-    float turSuresiTemp;
+    float roundTimeTemp;
     public List<Hero> heroPool;
     
     void Start()
@@ -62,11 +63,12 @@ public class GameController : Singleton<GameController>
         InGameToPreparatory += ChangeImage;
         InGameToPreparatory += InGameToPreparatoryChangeTag;
         PreparatoryToInGame += PreparatoryToInGameChangeTag;
-        turSayisi = 1;
-        turSuresiSlider.maxValue = turSuresi;
-        turSuresiTemp = turSuresi;
+        roundCount = 1;
+        roundTimeSlider.maxValue = roundTime;
+        roundStageCount = 1;
+        roundTimeTemp = roundTime;
         gameStage = GameStage.preparatory;
-        activeImage = imageList[roundPhaseCount].transform.GetChild(turSayisi-1).GetComponent<Image>();
+        activeImage = imageList[roundStageCount].transform.GetChild(roundCount-1).GetComponent<Image>();
     }
     void Update()
     {
@@ -74,24 +76,24 @@ public class GameController : Singleton<GameController>
     }
     public void RoundCalculater()
     {
-        turSuresi -= Time.deltaTime;
-        if(turSuresi <= 0)
+        roundTime -= Time.deltaTime;
+        if(roundTime <= 0)
         {
             if(gameStage == GameStage.inGame)
             {
                 InGameToPreparatory.Invoke();
-                turSayisi ++;
+                roundCount ++;
             }
             else if(gameStage == GameStage.preparatory)
             {
                 PreparatoryToInGame.Invoke();
             }
-            turSuresi = turSuresiTemp;
+            roundTime = roundTimeTemp;
         }
     }
     public void SahadakiMinyonlariSifirla()
     {
-        sahadakiMinyonlar = new List<Unit>();
+        minionsOnGround = new List<Unit>();
     }
     public void NewMinionWave()
     {
@@ -103,66 +105,66 @@ public class GameController : Singleton<GameController>
     }
     public void OzellikleriKapa()
     {    
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
-            var qw = SelectManeger.Instance.sahadakiHerolar[i];
-            SelectManeger.Instance.sahadakiHerolar[i].gameObject.SetActive(true);
+            var qw = SelectManager.Instance.sahadakiHerolar[i];
+            SelectManager.Instance.sahadakiHerolar[i].gameObject.SetActive(true);
             qw.GetComponent<Hero>().attack.enabled = false;
             qw.GetComponent<Hero>(). movement.enabled = false;
             qw.GetComponent<Hero>(). agent.enabled = false;
             qw.transform.position = new Vector3(qw.transform.parent.position.x,qw.transform.parent.position.y+.5f,qw.transform.parent.position.z);
-            qw.transform.parent.position = SelectManeger.Instance.sahadakiHerolar[i].GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
+            qw.transform.parent.position = SelectManager.Instance.sahadakiHerolar[i].GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
         }
     }
     public void OldPos()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
-            SelectManeger.Instance.sahadakiHerolar[i].transform.position = GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
+            SelectManager.Instance.sahadakiHerolar[i].transform.position = GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
         }
     }
     public void OzellikleriAc()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
-            yasayanHeros.Add(SelectManeger.Instance.sahadakiHerolar[i]);
-            SelectManeger.Instance.sahadakiHerolar[i].GetComponent<Movement>().enabled = true;
-            SelectManeger.Instance.sahadakiHerolar[i].GetComponent<Attack>().enabled = true;
-            SelectManeger.Instance.sahadakiHerolar[i].GetComponent<NavMeshAgent>().enabled = true;
+            yasayanHeros.Add(SelectManager.Instance.sahadakiHerolar[i]);
+            SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().enabled = true;
+            SelectManager.Instance.sahadakiHerolar[i].GetComponent<Attack>().enabled = true;
+            SelectManager.Instance.sahadakiHerolar[i].GetComponent<NavMeshAgent>().enabled = true;
         }
     }
     public void CheckEnemiesMinions()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
             for (int j = 0; j < minionWave[0].transform.childCount; j++)
             {
                 if(minionWave[0].transform.GetChild(j).GetComponent<Health>().isDeath)
                 {
-                    SelectManeger.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Remove(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
+                    SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Remove(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
                 }
             }
         }
     }
     public void SahadakiMinyonlarEkle()
     {
-        for (int i = 0; i < minionWave[turSayisi-1].transform.childCount; i++)
+        for (int i = 0; i < minionWave[roundCount-1].transform.childCount; i++)
         {
-            sahadakiMinyonlar.Add(minionWave[turSayisi-1].transform.GetChild(i).GetComponent<Unit>());
+            minionsOnGround.Add(minionWave[roundCount-1].transform.GetChild(i).GetComponent<Unit>());
         }
     }
     public void SahadakiMinyonlarSil(Unit unit)
     {
-        sahadakiMinyonlar.Remove(unit);
+        minionsOnGround.Remove(unit);
     }
 
     public void SetEnemiesMinionsFirst()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
             for (int j = 0; j < minionWave[0].transform.childCount; j++)
             {
-                SelectManeger.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Add(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
+                SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Add(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
             }
 
             
@@ -170,17 +172,17 @@ public class GameController : Singleton<GameController>
     }
     public void InGameToPreparatoryChangeTag()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
-            SelectManeger.Instance.sahadakiHerolar[i].tag = "Char";
+            SelectManager.Instance.sahadakiHerolar[i].tag = "Char";
         }
         gameStage = GameStage.preparatory;
     }
     public void PreparatoryToInGameChangeTag()
     {
-        for (int i = 0; i < SelectManeger.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
         {
-            SelectManeger.Instance.sahadakiHerolar[i].tag = "Oyunda";
+            SelectManager.Instance.sahadakiHerolar[i].tag = "Oyunda";
         }
         gameStage = GameStage.inGame;
     }
@@ -190,16 +192,17 @@ public class GameController : Singleton<GameController>
     // }
     public void ChangeImage()
     {
-        var childCount = imageList[roundPhaseCount].transform.childCount;
+        var childCount = imageList[roundStageCount].transform.childCount;
         activeImage.enabled = false;
-        activeImage = imageList[roundPhaseCount].transform.GetChild(turSayisi-1).GetComponent<Image>();
-        // activeImage = turImages[_turSayisi];
+        activeImage = imageList[roundStageCount].transform.GetChild(roundCount-1).GetComponent<Image>();
+        // activeImage = turImages[_roundCount];
         activeImage.enabled = true;
-        if(turSayisi == childCount)
+        roundText.text = roundStageCount + " / " + roundCount; 
+        if(roundCount == childCount)
         {
-            turSayisi = 1;
-            roundPhaseCount ++;
-            activeImage = imageList[roundPhaseCount].transform.GetChild(turSayisi-1).GetComponent<Image>();
+            roundCount = 1;
+            roundStageCount ++;
+            activeImage = imageList[roundStageCount].transform.GetChild(roundCount-1).GetComponent<Image>();
         }
     }
 }
