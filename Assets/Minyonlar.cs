@@ -17,6 +17,6 @@ public class Minyonlar : Unit
     {
         attack.enabled = true;
         movement.enabled = true;
-        movement.allEnemies = GameManager.Instance.yasayanHeros;
+        movement.allEnemies = GameManager.Instance.livingHeros;
     }
 }

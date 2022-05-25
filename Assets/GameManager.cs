@@ -12,7 +12,7 @@ public enum GameStage
 public class GameManager : Singleton<GameManager>
 {
     public List<Unit> minionsOnGround;
-    public List<Unit> yasayanHeros;
+    public List<Unit> livingHeros;
     public Transform poolPos;
     public List<GameObject> minionWave;
     public static event System.Action InGameToPreparatory;
@@ -113,7 +113,7 @@ public class GameManager : Singleton<GameManager>
     {
         for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
-            yasayanHeros.Add(SelectManager.Instance.HerosOnField[i]);
+            livingHeros.Add(SelectManager.Instance.HerosOnField[i]);
             SelectManager.Instance.HerosOnField[i].GetComponent<Movement>().enabled = true;
             SelectManager.Instance.HerosOnField[i].GetComponent<Attack>().enabled = true;
             SelectManager.Instance.HerosOnField[i].GetComponent<NavMeshAgent>().enabled = true;

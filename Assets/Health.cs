@@ -39,7 +39,7 @@ public class Health : MonoBehaviour
     {
         if(unit.TryGetComponent(out Hero hero))
         {
-            GameManager.Instance.yasayanHeros.Remove(unit);
+            GameManager.Instance.livingHeros.Remove(unit);
             this.gameObject.SetActive(false);
         }
         else if(unit.TryGetComponent(out Minyonlar minyonlar))

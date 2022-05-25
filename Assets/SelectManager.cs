@@ -96,20 +96,13 @@ public class SelectManager : Singleton<SelectManager>
     {
         GameObject tempFloor = hit.collider.gameObject;
         GameObject tempHero = tempFloor.GetComponent<GridController>().heroOnGround;
-
         selectedObject.transform.parent.position = hitGridController.heroOnGround.GetComponent<HeroPlacement>().whichFloor.transform.position;
         hitGridController.heroOnGround.transform.parent.position = selectedComponent.whichFloor.transform.position;
-
         hitGridController.heroOnGround.GetComponent<HeroPlacement>().whichFloor = selectedComponent.whichFloor;
         hitGridController.heroOnGround = selectedObject;
-
-
         selectedComponent.whichFloor.GetComponent<GridController>().heroOnGround = tempHero; 
         selectedComponent.whichFloor = tempFloor;
 
-
-
-    
         GetCountOnField();
     }
     public void SahaIcıBosYereHeroKoy(HeroPlacement selectedComponent)
