@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
-    public bool yedekMi;
-    public GameObject uzerindekiChar;
+    public bool isBackup;
+    public GameObject heroOnGround;
 }

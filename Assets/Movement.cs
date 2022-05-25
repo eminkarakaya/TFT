@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         
-        if(GameController.Instance.gameStage == GameStage.preparatory)
+        if(GameManager.Instance.gameStage == GameStage.preparatory)
         {
             
         }

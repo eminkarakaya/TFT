@@ -9,7 +9,7 @@ public enum GameStage
     inGame,
     preparatory
 }
-public class GameController : Singleton<GameController>
+public class GameManager : Singleton<GameManager>
 {
     public List<Unit> minionsOnGround;
     public List<Unit> yasayanHeros;
@@ -52,13 +52,11 @@ public class GameController : Singleton<GameController>
     
     void Start()
     {
-        PreparatoryToInGame += SahadakiMinyonlariSifirla;
-        PreparatoryToInGame += SahadakiMinyonlarEkle;
-        PreparatoryToInGame += OzellikleriAc;
-        InGameToPreparatory += OzellikleriKapa;
+        PreparatoryToInGame += PlaceMinion;
+        PreparatoryToInGame += OpenProperties;
+        InGameToPreparatory += CloseProperties;
         Health.OnDeath += CheckEnemiesMinions;
         InGameToPreparatory += NewMinionWave;
-        // InGameToPreparatory += OldPos;
         PreparatoryToInGame += SetEnemiesMinionsFirst;
         InGameToPreparatory += ChangeImage;
         InGameToPreparatory += InGameToPreparatoryChangeTag;
@@ -91,105 +89,83 @@ public class GameController : Singleton<GameController>
             roundTime = roundTimeTemp;
         }
     }
-    public void SahadakiMinyonlariSifirla()
-    {
-        minionsOnGround = new List<Unit>();
-    }
     public void NewMinionWave()
     {
-        Debug.Log("newmınıonwave");
         minionWave[0].SetActive(false);
         minionWave.RemoveAt(0);
         SetEnemiesMinionsFirst();
         minionWave[0].SetActive(true);
     }
-    public void OzellikleriKapa()
+    public void CloseProperties()
     {    
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
-            var qw = SelectManager.Instance.sahadakiHerolar[i];
-            SelectManager.Instance.sahadakiHerolar[i].gameObject.SetActive(true);
+            var qw = SelectManager.Instance.HerosOnField[i];
+            SelectManager.Instance.HerosOnField[i].gameObject.SetActive(true);
             qw.GetComponent<Hero>().attack.enabled = false;
             qw.GetComponent<Hero>(). movement.enabled = false;
             qw.GetComponent<Hero>(). agent.enabled = false;
             qw.transform.position = new Vector3(qw.transform.parent.position.x,qw.transform.parent.position.y+.5f,qw.transform.parent.position.z);
-            qw.transform.parent.position = SelectManager.Instance.sahadakiHerolar[i].GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
+            qw.transform.parent.position = SelectManager.Instance.HerosOnField[i].GetComponent<HeroPlacement>().whichFloor.transform.position;
         }
     }
-    public void OldPos()
+    public void OpenProperties()
     {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
-            SelectManager.Instance.sahadakiHerolar[i].transform.position = GetComponent<KarakterYerlestirme>().hangiZemin.transform.position;
-        }
-    }
-    public void OzellikleriAc()
-    {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
-        {
-            yasayanHeros.Add(SelectManager.Instance.sahadakiHerolar[i]);
-            SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().enabled = true;
-            SelectManager.Instance.sahadakiHerolar[i].GetComponent<Attack>().enabled = true;
-            SelectManager.Instance.sahadakiHerolar[i].GetComponent<NavMeshAgent>().enabled = true;
+            yasayanHeros.Add(SelectManager.Instance.HerosOnField[i]);
+            SelectManager.Instance.HerosOnField[i].GetComponent<Movement>().enabled = true;
+            SelectManager.Instance.HerosOnField[i].GetComponent<Attack>().enabled = true;
+            SelectManager.Instance.HerosOnField[i].GetComponent<NavMeshAgent>().enabled = true;
         }
     }
     public void CheckEnemiesMinions()
     {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
             for (int j = 0; j < minionWave[0].transform.childCount; j++)
             {
                 if(minionWave[0].transform.GetChild(j).GetComponent<Health>().isDeath)
                 {
-                    SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Remove(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
+                    SelectManager.Instance.HerosOnField[i].GetComponent<Movement>().allEnemies.Remove(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
                 }
             }
         }
     }
-    public void SahadakiMinyonlarEkle()
+    public void PlaceMinion()
     {
         for (int i = 0; i < minionWave[roundCount-1].transform.childCount; i++)
         {
             minionsOnGround.Add(minionWave[roundCount-1].transform.GetChild(i).GetComponent<Unit>());
         }
     }
-    public void SahadakiMinyonlarSil(Unit unit)
-    {
-        minionsOnGround.Remove(unit);
-    }
 
     public void SetEnemiesMinionsFirst()
     {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
             for (int j = 0; j < minionWave[0].transform.childCount; j++)
             {
-                SelectManager.Instance.sahadakiHerolar[i].GetComponent<Movement>().allEnemies.Add(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
+                SelectManager.Instance.HerosOnField[i].GetComponent<Movement>().allEnemies.Add(minionWave[0].transform.GetChild(j).GetComponent<Unit>());
             }
-
-            
         }
     }
     public void InGameToPreparatoryChangeTag()
     {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
-            SelectManager.Instance.sahadakiHerolar[i].tag = "Char";
+            SelectManager.Instance.HerosOnField[i].tag = "Char";
         }
         gameStage = GameStage.preparatory;
     }
     public void PreparatoryToInGameChangeTag()
     {
-        for (int i = 0; i < SelectManager.Instance.sahadakiHerolar.Count; i++)
+        for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
         {
-            SelectManager.Instance.sahadakiHerolar[i].tag = "Oyunda";
+            SelectManager.Instance.HerosOnField[i].tag = "Oyunda";
         }
         gameStage = GameStage.inGame;
     }
-    // IEnumerator RoundCalculater()
-    // {
-    //     yield return new WaitForSeconds(Time)
-    // }
     public void ChangeImage()
     {
         var childCount = imageList[roundStageCount].transform.childCount;

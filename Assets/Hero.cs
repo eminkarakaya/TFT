@@ -53,6 +53,6 @@ public class Hero : Unit
     // }
     public void PoolPoint()
     {
-        transform.position = GameController.Instance.poolPos.position;
+        transform.position = GameManager.Instance.poolPos.position;
     }
 }

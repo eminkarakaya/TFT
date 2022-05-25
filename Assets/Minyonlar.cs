@@ -11,12 +11,12 @@ public class Minyonlar : Unit
         Health.OnDeath += SetEnemies;
         movement = GetComponent<Movement>();
         attack = GetComponent<Attack>();
-        GameController.PreparatoryToInGame += SetEnemies;
+        GameManager.PreparatoryToInGame += SetEnemies;
     }
     public void SetEnemies()
     {
         attack.enabled = true;
         movement.enabled = true;
-        movement.allEnemies = GameController.Instance.yasayanHeros;
+        movement.allEnemies = GameManager.Instance.yasayanHeros;
     }
 }

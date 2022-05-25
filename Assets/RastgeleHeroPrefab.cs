@@ -23,8 +23,8 @@ public class RastgeleHeroPrefab : MonoBehaviour
     }
     public void SetBuyHeroButton()
     {
-        hero = GameController.Instance.heroPool[Random.Range(0,GameController.Instance.heroPool.Count-1)];
-        GameController.Instance.heroPool.Remove(hero);
+        hero = GameManager.Instance.heroPool[Random.Range(0,GameManager.Instance.heroPool.Count-1)];
+        GameManager.Instance.heroPool.Remove(hero);
         hero.gameObject.SetActive(true); 
         heroData = hero.heroData;
         nameText.text = heroData.name;
@@ -33,7 +33,7 @@ public class RastgeleHeroPrefab : MonoBehaviour
         ozellik1Name.text = heroData.ozellik1Name;
         ozellik2Name.text = heroData.ozellik2Name;
         ozellik3Name.text = heroData.ozellik3Name;
-        GameController.Instance.heroPool.Remove(hero);
+        GameManager.Instance.heroPool.Remove(hero);
         satildiMi = false;
     }
     public void BuyHero()
@@ -59,7 +59,7 @@ public class RastgeleHeroPrefab : MonoBehaviour
         }
         else
         {
-            GameController.Instance.heroPool.Add(hero);
+            GameManager.Instance.heroPool.Add(hero);
         }
         SetBuyHeroButton();
         

@@ -24,7 +24,7 @@ public class Health : MonoBehaviour
     void Start()
     {
         HpReset();
-        GameController.InGameToPreparatory += HpReset;        
+        GameManager.InGameToPreparatory += HpReset;        
     }
     public void HpReset()
     {
@@ -39,12 +39,12 @@ public class Health : MonoBehaviour
     {
         if(unit.TryGetComponent(out Hero hero))
         {
-            GameController.Instance.yasayanHeros.Remove(unit);
+            GameManager.Instance.yasayanHeros.Remove(unit);
             this.gameObject.SetActive(false);
         }
         else if(unit.TryGetComponent(out Minyonlar minyonlar))
         {
-            GameController.Instance.minionsOnGround.Remove(unit);
+            GameManager.Instance.minionsOnGround.Remove(unit);
             isDeath = true;
             this.gameObject.SetActive(false);
         }

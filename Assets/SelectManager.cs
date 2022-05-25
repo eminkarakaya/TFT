@@ -5,24 +5,24 @@ using UnityEngine.UI;
 
 public class SelectManager : Singleton<SelectManager>
 {
-    public List<Unit> sahadakiHerolar;
+    public List<Unit> HerosOnField;
     public TextMesh sahadakiOyuncuSayisiText;
     public List<GridController> sahaIciGridler;
-    bool sahaFull;
-    public  bool satilmaYerindeMi;
+    public  bool isOnSalePlace;
     RaycastHit hit;
-    RaycastHit charHit;
-    // public int playerMaskInt = 7;
     [SerializeField] private GameObject selectedObject;
-    bool basildiMi;
+    bool isPressed;
     public LayerMask mask;
-    // int bitmask;
      
     private void Update()
     {
+        Select();
+    }
+    public void Select()
+    {
         if(Input.GetMouseButtonDown(0))
         {
-            basildiMi = true;
+            isPressed = true;
             if(selectedObject == null)
             {
                 RaycastHit hit = CastRay(mask);
@@ -37,17 +37,17 @@ public class SelectManager : Singleton<SelectManager>
                 }
             }
         }
-        if(selectedObject != null && basildiMi)
+        if(selectedObject != null && isPressed)
         {
-            
             hit = CastRayChar();
-            KarakterYerlestirme selectedComponent = selectedObject.GetComponent<KarakterYerlestirme>();
+            HeroPlacement selectedComponent = selectedObject.GetComponent<HeroPlacement>();
             Vector3 position = new Vector3(Input.mousePosition.x,Input.mousePosition.y,Camera.main.WorldToScreenPoint(selectedObject.transform.position).z);
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(position);
             selectedObject.transform.parent.position = new Vector3(worldPosition.x,.25f,worldPosition.z);
             
             if(Input.GetMouseButtonUp(0))
             {   
+                
                 SellHero();
                 if(selectedObject == null)
                 {
@@ -56,110 +56,119 @@ public class SelectManager : Singleton<SelectManager>
                 
                 if(!hit.collider.CompareTag("Ground"))
                 {
-                    HeroKoymaIptali(selectedComponent);
+                    HerosInsertionCancel(selectedComponent);
                 }
                 else
                 {
                     GridController hitGridController  = hit.collider.GetComponent<GridController>();
-                    GameObject temp = selectedObject.GetComponent<KarakterYerlestirme>().hangiZemin;
 
                     // uzerınde car olan grıde car koyarken
-                    if(hit.collider.GetComponent<GridController>().uzerindekiChar != null)
+                    if(hit.collider.GetComponent<GridController>().heroOnGround != null)
                     {
-                       DoluYereHeroKoy(selectedComponent,hitGridController,temp);
+                       DoluYereHeroKoy(selectedComponent,hitGridController);
                     }
                     else
                     {
-                        if(GameController.Instance.gameStage == GameStage.inGame)
+                        if(GameManager.Instance.gameStage == GameStage.inGame && !hitGridController.isBackup)
                         {
-                            selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+                            selectedObject.transform.parent.position = selectedComponent.whichFloor.transform.position;
                             selectedObject = null;
-                            basildiMi = false;
+                            isPressed = false;
                             return;
                         }
                         //sahaya adam koydugumuz yer
                         SahaIcıBosYereHeroKoy(selectedComponent);
                     }
                 selectedObject = null;
-                basildiMi = false;
+                isPressed = false;
                 }
             }
         }
     }
-    public void HeroKoymaIptali(KarakterYerlestirme selectedComponent)
+    public void HerosInsertionCancel(HeroPlacement selectedComponent)
     {
-        selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+        selectedObject.transform.parent.position = selectedComponent.whichFloor.transform.position;
         selectedObject = null;
-        basildiMi = false;
+        isPressed = false;
         return;
     }
-    public void DoluYereHeroKoy(KarakterYerlestirme selectedComponent , GridController hitGridController, GameObject temp)
+    public void DoluYereHeroKoy(HeroPlacement selectedComponent , GridController hitGridController)
     {
-        selectedComponent.hangiZemin = hit.collider.gameObject;
-        selectedObject.transform.parent.position = hit.collider.transform.position;
-        hitGridController.uzerindekiChar.GetComponent<KarakterYerlestirme>().hangiZemin = temp;
-        hitGridController.uzerindekiChar.transform.parent.position = temp.transform.position;
-        hitGridController.uzerindekiChar = selectedObject;
-        temp = hitGridController.uzerindekiChar;
-        GetSahaIciOyuncuSayisi();
+        GameObject tempFloor = hit.collider.gameObject;
+        GameObject tempHero = tempFloor.GetComponent<GridController>().heroOnGround;
+
+        selectedObject.transform.parent.position = hitGridController.heroOnGround.GetComponent<HeroPlacement>().whichFloor.transform.position;
+        hitGridController.heroOnGround.transform.parent.position = selectedComponent.whichFloor.transform.position;
+
+        hitGridController.heroOnGround.GetComponent<HeroPlacement>().whichFloor = selectedComponent.whichFloor;
+        hitGridController.heroOnGround = selectedObject;
+
+
+        selectedComponent.whichFloor.GetComponent<GridController>().heroOnGround = tempHero; 
+        selectedComponent.whichFloor = tempFloor;
+
+
+
+    
+        GetCountOnField();
     }
-    public void SahaIcıBosYereHeroKoy(KarakterYerlestirme selectedComponent)
+    public void SahaIcıBosYereHeroKoy(HeroPlacement selectedComponent)
     {
-        if(!hit.collider.GetComponent<GridController>().yedekMi)
+        if(!hit.collider.GetComponent<GridController>().isBackup)
         {
-            if(GetSahaIciOyuncuSayisi() == HeroPanel.Instance.level && selectedComponent.hangiZemin.GetComponent<GridController>().yedekMi)
+            if(GetCountOnField() == HeroPanel.Instance.level && selectedComponent.whichFloor.GetComponent<GridController>().isBackup)
             {
-                selectedObject.transform.parent.position = selectedComponent.hangiZemin.transform.position;
+                selectedObject.transform.parent.position = selectedComponent.whichFloor.transform.position;
                 selectedObject = null;
-                GetSahaIciOyuncuSayisi();
+                GetCountOnField();
                 return;
             }
         }
-        selectedComponent.hangiZemin.GetComponent<GridController>().uzerindekiChar = null;
-        selectedComponent.hangiZemin = hit.collider.gameObject;
+        selectedComponent.whichFloor.GetComponent<GridController>().heroOnGround = null;
+        selectedComponent.whichFloor = hit.collider.gameObject;
         selectedObject.transform.parent.position = hit.collider.gameObject.transform.position;
-        hit.collider.GetComponent<GridController>().uzerindekiChar = selectedObject;
-        GetSahaIciOyuncuSayisi();
+        hit.collider.GetComponent<GridController>().heroOnGround = selectedObject;
+        GetCountOnField();
     }
     public void True()
     {
-        satilmaYerindeMi = true;
+        isOnSalePlace = true;
     }
     public void False()
     {
-        satilmaYerindeMi = false;
+        isOnSalePlace = false;
     }
     public void SellHero()
     {
-        if(selectedObject != null && satilmaYerindeMi)
+        if(selectedObject != null && isOnSalePlace)
         {
             Debug.Log("satıldı");
-            selectedObject.GetComponent<KarakterYerlestirme>().hangiZemin.GetComponent<GridController>().uzerindekiChar = null;
-            selectedObject.GetComponent<KarakterYerlestirme>().hangiZemin = null;
+            selectedObject.GetComponent<HeroPlacement>().whichFloor.GetComponent<GridController>().heroOnGround = null;
+            selectedObject.GetComponent<HeroPlacement>().whichFloor = null;
             HeroPanel.Instance.gold += selectedObject.GetComponent<Hero>().heroData.cost;
-            GameController.Instance.heroPool.Add(selectedObject.GetComponent<Hero>());
+            GameManager.Instance.heroPool.Add(selectedObject.GetComponent<Hero>());
             selectedObject.SetActive(false);
             selectedObject = null;
         }
     }
-    public int GetSahaIciOyuncuSayisi()
+    public int GetCountOnField()
     {
-        var sahadakiOyuncuSayisi = 0;
-        List<Unit> sahadakiUnits = new List<Unit>();
+        var herosOnFieldTemp = 0;
+        List<Unit> unitsOnField = new List<Unit>();
         for (int i = 0; i < sahaIciGridler.Count; i++)
         {
-            if(sahaIciGridler[i].uzerindekiChar != null)
+            if(sahaIciGridler[i].heroOnGround != null)
             {
-                // if(!sahadakiHerolar.Contains(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>()))
+                // if(!sahadakiHerolar.Contains(sahaIciGridler[i].heroOnGround.GetComponent<Unit>()))
                 // {
-                    sahadakiUnits.Add(sahaIciGridler[i].uzerindekiChar.GetComponent<Unit>());
+                    unitsOnField.Add(sahaIciGridler[i].heroOnGround.GetComponent<Unit>());
                 // }
-                sahadakiOyuncuSayisi++;
+                herosOnFieldTemp++;
             }
         }
-        sahadakiHerolar = sahadakiUnits;
-        sahadakiOyuncuSayisiText.text = sahadakiOyuncuSayisi.ToString()+ "/" + HeroPanel.Instance.level;
-        return sahadakiOyuncuSayisi;
+        HerosOnField = unitsOnField;
+        sahadakiOyuncuSayisiText.text = herosOnFieldTemp.ToString()+ "/" + HeroPanel.Instance.level;
+        return herosOnFieldTemp;
     }
     private RaycastHit CastRay(LayerMask layerMask)
     {

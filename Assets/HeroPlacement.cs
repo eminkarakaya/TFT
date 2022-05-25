@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class KarakterYerlestirme : MonoBehaviour 
+public class HeroPlacement : MonoBehaviour 
 {
-    public GameObject hangiZemin;
+    public GameObject whichFloor;
 }

@@ -55,7 +55,7 @@ public class HeroPanel : Singleton<HeroPanel>
         set {
             _level = value;
             levelText.text = _level.ToString();
-            SelectManager.Instance.sahadakiOyuncuSayisiText.text =SelectManager.Instance.GetSahaIciOyuncuSayisi().ToString()+ "/" + _level;
+            SelectManager.Instance.sahadakiOyuncuSayisiText.text =SelectManager.Instance.GetCountOnField().ToString()+ "/" + _level;
         }
     }
     public static event System.Action BuyHeroClick; 
@@ -73,11 +73,11 @@ public class HeroPanel : Singleton<HeroPanel>
     {
         for (int i = 0; i < yedekKlubesi.Count; i++)
         {
-            if(yedekKlubesi[i].uzerindekiChar == null)
+            if(yedekKlubesi[i].heroOnGround == null)
             {
-                yedekKlubesi[i].uzerindekiChar = hero.gameObject;
+                yedekKlubesi[i].heroOnGround = hero.gameObject;
                 hero.transform.parent.position = yedekKlubesi[i].transform.position;
-                hero.GetComponent<KarakterYerlestirme>().hangiZemin = yedekKlubesi[i].gameObject;
+                hero.GetComponent<HeroPlacement>().whichFloor = yedekKlubesi[i].gameObject;
                 return yedekKlubesi[i];
             }
         }
