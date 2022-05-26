@@ -11,6 +11,17 @@ public enum GameStage
 }
 public class GameManager : Singleton<GameManager>
 {
+    public Text hpText;
+    [SerializeField] private int _hp;
+    public int hp
+    {
+        get => _hp;
+        set
+        {
+            _hp = value;
+            hpText.text = _hp.ToString();
+        }
+    }
     public List<Unit> minionsOnGround;
     public List<Unit> livingHeros;
     public Transform poolPos;
@@ -20,7 +31,8 @@ public class GameManager : Singleton<GameManager>
     public List<GameObject> imageList; 
     public Image activeImage;
     //public List<Image> turImages;
-    private int _roundStageCount;
+    public int [] takeDamageStage = new int[] {0,0,2,3,5,8,15,15,15,15};
+    [SerializeField] private int _roundStageCount;
     public int roundStageCount{
         get => _roundStageCount;
         set{
@@ -52,6 +64,7 @@ public class GameManager : Singleton<GameManager>
     
     void Start()
     {
+        hp = 100;
         PreparatoryToInGame += PlaceMinion;
         PreparatoryToInGame += OpenProperties;
         InGameToPreparatory += CloseProperties;
@@ -139,7 +152,6 @@ public class GameManager : Singleton<GameManager>
             minionsOnGround.Add(minionWave[roundCount-1].transform.GetChild(i).GetComponent<Unit>());
         }
     }
-
     public void SetEnemiesMinionsFirst()
     {
         for (int i = 0; i < SelectManager.Instance.HerosOnField.Count; i++)
@@ -181,4 +193,21 @@ public class GameManager : Singleton<GameManager>
             activeImage = imageList[roundStageCount].transform.GetChild(roundCount-1).GetComponent<Image>();
         }
     }
+
+    public int CalculateDamage()
+    {
+        var damage =  minionsOnGround.Count*2 + takeDamageStage[roundStageCount];
+        return damage;
+    }
+    public void TakeDamage()
+    {
+        if(livingHeros.Count == 0)
+        {
+            hp -= CalculateDamage();
+            roundTime = 3;
+        }
+    }    
+    
+
 }
+

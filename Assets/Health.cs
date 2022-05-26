@@ -14,8 +14,9 @@ public class Health : MonoBehaviour
         set{
             _hp = value;
             hpSlider.value = value;
-            if(_hp <= 0)
+            if(_hp <= 0 && !isDeath)
             {
+                Debug.Log(hp + " " + this.name + " " + isDeath + " isdeath");
                 Death(this.GetComponent<Unit>());
                 // Destroy(this.gameObject);
             }
@@ -33,13 +34,16 @@ public class Health : MonoBehaviour
             hpSlider.maxValue = unit.maxHp;
             hp = unit.maxHp;
             hpSlider.value = hp;
+            isDeath = false;
         }
     }
     public void Death(Unit unit)
     {
         if(unit.TryGetComponent(out Hero hero))
         {
+            isDeath = true;
             GameManager.Instance.livingHeros.Remove(unit);
+            GameManager.Instance.TakeDamage();
             this.gameObject.SetActive(false);
         }
         else if(unit.TryGetComponent(out Minyonlar minyonlar))
@@ -48,7 +52,7 @@ public class Health : MonoBehaviour
             isDeath = true;
             this.gameObject.SetActive(false);
         }
-            OnDeath?.Invoke();
+        OnDeath?.Invoke();
     }
 
 }

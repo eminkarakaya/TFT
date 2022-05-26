@@ -453,85 +453,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c86e4cb6cc61cb4b96b460609380d84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &31606910
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 31606911}
-  - component: {fileID: 31606913}
-  - component: {fileID: 31606912}
-  m_Layer: 5
-  m_Name: HPText
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &31606911
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31606910}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1632043966}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -40.631107, y: -10}
-  m_SizeDelta: {x: 209.2624, y: 79.1819}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &31606912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31606910}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 51
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 55
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 100
---- !u!222 &31606913
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 31606910}
-  m_CullTransparentMesh: 1
 --- !u!1 &39064330
 GameObject:
   m_ObjectHideFlags: 0
@@ -6087,8 +6008,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa38670cb5f8074a9be44586a4b7495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hpText: {fileID: 856221886}
+  _hp: 0
   minionsOnGround: []
-  yasayanHeros: []
+  livingHeros: []
   poolPos: {fileID: 2077109314}
   minionWave:
   - {fileID: 2116896855}
@@ -6106,11 +6029,12 @@ MonoBehaviour:
   - {fileID: 1858805181}
   - {fileID: 1216599358}
   activeImage: {fileID: 0}
+  takeDamageStage: 0000000000000000020000000300000005000000080000000f0000000f0000000f0000000f000000
   roundText: {fileID: 1889462878}
   _roundCount: 0
   gameStage: 1
   roundTimeSlider: {fileID: 444125528}
-  _roundTime: 200
+  _roundTime: 10
   heroPool:
   - {fileID: 4674212249983732304}
   - {fileID: 17068874021361331}
@@ -9415,7 +9339,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1163564723, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: _hp
-      value: 2500
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 17068874021361333, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: target
@@ -9468,6 +9392,10 @@ PrefabInstance:
     - target: {fileID: 1531771960775828345, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: m_Name
       value: Lucian (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531030692248675412, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
+      propertyPath: maxHp
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 2531030692248675412, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: damage
@@ -12314,8 +12242,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 31606911}
+  m_Children: []
   m_Father: {fileID: 1853185015}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16096,6 +16023,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1163564723, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
+      propertyPath: _hp
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 17068874021361333, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: target
       value: 
@@ -16147,6 +16078,10 @@ PrefabInstance:
     - target: {fileID: 1531771960775828345, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: m_Name
       value: Lucian
+      objectReference: {fileID: 0}
+    - target: {fileID: 2531030692248675412, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
+      propertyPath: maxHp
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4848109314167910643, guid: 11762f26666e23f4794eab4623aa190e, type: 3}
       propertyPath: m_AnchorMax.x
