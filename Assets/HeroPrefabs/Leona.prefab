@@ -528,15 +528,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5365580986256489786}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f80d1d7e28828524aa6e27282bdbb74d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 0
-  rangeClass: {fileID: 0}
-  attackRate: 0
-  ad: 0
+  rangeClass: {fileID: 986091039}
+  attackRate: 1
+  ad: 15
   range: 3
   target: {fileID: 0}
 --- !u!1 &5492629340208391290
